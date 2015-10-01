@@ -1,0 +1,56 @@
+name: Bloo
+objects:
+  boxy1:
+    type: box
+    additionalComponents:
+      translation:
+        x: 4
+        y: 4
+  boxy2:
+    type: box
+    additionalComponents:
+      translation:
+        x: 3
+        y: 3
+  boxy3:
+    type: box
+    additionalComponents:
+      translation:
+        x: 2
+        y: 2
+  boxy4:
+    type: box
+    additionalComponents:
+      translation:
+        x: 1
+        y: 1
+  boxy5:
+    type: box
+    additionalComponents:
+      translation:
+        x: 0
+        y: 0
+  boxy6:
+    type: box
+    additionalComponents:
+      translation:
+        x: -1
+        y: -1
+  boxy7:
+    type: box
+    additionalComponents:
+      translation:
+        x: -2
+        y: -2
+  boxy8:
+    type: box
+    additionalComponents:
+      translation:
+        x: -3
+        y: -3
+  boxy9:
+    type: box
+    additionalComponents:
+      translation:
+        x: -4
+        y: -4

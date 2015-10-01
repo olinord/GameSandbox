@@ -1,0 +1,12 @@
+#version 330
+
+// Data sent from vertex shader
+in vec4 voutColor;
+
+// Data sent to screen
+out vec4 poutColor;
+
+void main(void)
+{
+    poutColor = voutColor;
+}

@@ -1,0 +1,3 @@
+
+RENDERABLE_COMPONENT = "renderable"
+TRANSLATION_COMPONENT = "translation"
