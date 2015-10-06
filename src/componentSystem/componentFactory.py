@@ -10,9 +10,15 @@ def CreateTranslationComponent(entityName, componentInfo):
 	from componentSystem.components.translation import TranslationComponent
 	return TranslationComponent(entityName, componentInfo)
 
+def CreatePlayerControlledComponent(entityName, componentInfo):
+	# import the components as late as possible, so we don't import gunk in the unit tests
+	from componentSystem.components.playerControlled import PlayerControlledComponent
+	return PlayerControlledComponent(entityName, componentInfo)
+
 componentFactoryMethods = {
 	RENDERABLE_COMPONENT: CreateRenderableComponent,
-	TRANSLATION_COMPONENT: CreateTranslationComponent
+	TRANSLATION_COMPONENT: CreateTranslationComponent,
+	PLAYER_CONTROLLED_COMPONENT: CreatePlayerControlledComponent
 }
 
 def CreateComponent(entityName, componentName, componentInfo):

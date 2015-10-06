@@ -1,5 +1,6 @@
 import os
 import yaml
+import imageio
 
 def AbsJoin(*paths):
 	return os.path.abspath(os.path.join(*paths))
@@ -12,3 +13,8 @@ def LoadResFile(path):
 
 def LoadEntityType(entityType):
 	return LoadResFile("data/entities/" + entityType + ".yaml")
+
+def LoadImage(imageName):
+	image = imageio.imread(AbsJoin(ABSOLUTE_RES_FOLDER, "images", imageName))
+	return image
+	

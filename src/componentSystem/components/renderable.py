@@ -1,11 +1,10 @@
-
-
 from OpenGL.GL import *
 from OpenGL.arrays import *
 from OpenGL.GL.ARB.vertex_array_object import *
 from OpenGL.GL.shaders import *
 
-from utilities.shaderManager import GetProgram
+from utilities.resourceManager import LoadImage
+from utilities.shaderManager import GetProgram, CreateImageTexture
 from componentSystem.componentRegistry import COMPONENT_REGISTRY
 from componentSystem.componentConst import TRANSLATION_COMPONENT
 
@@ -13,8 +12,14 @@ from componentSystem.componentConst import TRANSLATION_COMPONENT
 class RenderableComponent(object):
 
 	def __init__(self, entityName, componentInfo):
-		self.width = componentInfo["width"]
-		self.height = componentInfo["height"]
+
+		image = LoadImage(componentInfo["image"])
+		self.width, self.height, _ = image.shape
+		self.halfHeight = self.height * 0.5
+		self.halfWidth = self.width * 0.5
+		
+		self.imageID = CreateImageTexture(image)
+
 		self.entityName = entityName
 		self.vaoId = None
 		self.programID = None
@@ -35,7 +40,6 @@ class RenderableComponent(object):
 		glBindVertexArray(self.vaoId)
 
 	def SetupShaders(self):
-
 		self.programID = GetProgram("generic.vs", "generic.ps")
 
 		self.uniformDataLocations = {
@@ -47,9 +51,21 @@ class RenderableComponent(object):
 		vertexBufferIDs = glGenBuffers(2)
 
 		points = [
-			0.0, 0.0,
+			-self.halfWidth, -self.halfHeight,
+			-self.halfWidth, self.halfHeight,
+			self.halfWidth, self.halfHeight, 
+			self.halfWidth, self.halfHeight, 
+			self.halfWidth, -self.halfHeight,
+			-self.halfWidth, -self.halfHeight
+		]
+
+		uv = [
 			0.0, 1.0,
-			1.0, 1.0, 
+			0.0, 0.0, 
+			1.0, 0.0,
+			1.0, 0.0, 
+			1.0, 1.0,
+			0.0, 1.0,
 		]
 
 		# Create the vertex array for the data
@@ -76,14 +92,14 @@ class RenderableComponent(object):
 		glBindBuffer(GL_ARRAY_BUFFER, vertexBufferIDs[1])
 		glBufferData(
 			GL_ARRAY_BUFFER,
-			4 * len(points),
-			vbo.ArrayDatatype.asArray([(1.0, 1.0, 1.0, 1.0)]*len(points), GL_FLOAT),
+			4 * len(uv),
+			vbo.ArrayDatatype.asArray(uv, GL_FLOAT),
 			GL_STATIC_DRAW
 		)
 
 		glVertexAttribPointer(
-			glGetAttribLocation(self.programID, 'vinColor'),
-			4,
+			glGetAttribLocation(self.programID, 'vinUV'),
+			2,
 			GL_FLOAT,
 			GL_FALSE,
 			0,
@@ -96,18 +112,22 @@ class RenderableComponent(object):
 		glBindBuffer(GL_ARRAY_BUFFER, 0)
 		glBindVertexArray(0)
 
-	def SetPerFrameInfo(self, **kwargs):
-		for argumentName, argumentValue in kwargs.iteritems():
-			glUniformMatrix4fv(self.uniformDataLocations[argumentName], 1, GL_FALSE, argumentValue)
-
+	def SetPerFrameInfo(self, matrix44={}):
+		for matrixName, matrixValue in matrix44.iteritems():
+			glUniformMatrix4fv(self.uniformDataLocations[matrixName], 1, GL_FALSE, matrixValue)
+	
 	def GetWorldMatrix(self):
 		if self.translationComponent is None:
 			self.translationComponent = COMPONENT_REGISTRY.GetEntityComponent(self.entityName, TRANSLATION_COMPONENT)
 		return self.translationComponent.matrix
 
 	def Render(self, dt):
-		glUniformMatrix4fv(self.uniformDataLocations["world"], 1, GL_FALSE, self.GetWorldMatrix())
+		self.SetPerFrameInfo(matrix44={"world": self.GetWorldMatrix()})
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, self.imageID);
+		
 		glBindVertexArray(self.vaoId)
-		glDrawArrays(GL_TRIANGLES, 0, 3)
+		glDrawArrays(GL_TRIANGLES, 0, 6)
 
 		glBindVertexArray(0)

@@ -1,5 +1,6 @@
 
 from OpenGL.GL.shaders import *
+from OpenGL.GL import *
 from utilities.resourceManager import ABSOLUTE_RES_FOLDER, AbsJoin
 
 SHADER_FOLDER = AbsJoin(ABSOLUTE_RES_FOLDER, "shaders")
@@ -30,3 +31,20 @@ def LoadShader(shaderPath):
 		
 	with open(AbsJoin(SHADER_FOLDER, shaderPath)) as f:
 		return compileShader(f.read(), shaderType)
+
+def CreateImageTexture(image):
+	xSize, ySize, _ = image.shape
+	
+	textureID = glGenTextures(1)
+
+	glActiveTexture(GL_TEXTURE0)
+	glBindTexture(GL_TEXTURE_2D, textureID)
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+
+	glTexImage2D(
+			GL_TEXTURE_2D, 0, GL_RGBA, xSize, ySize, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, image.tobytes()
+		)
+	return textureID

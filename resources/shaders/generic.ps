@@ -1,12 +1,13 @@
 #version 330
 
-// Data sent from vertex shader
-in vec4 voutColor;
+uniform sampler2D tex0;
 
-// Data sent to screen
-out vec4 poutColor;
+in vec2 vTexCoord;
 
-void main(void)
-{
-    poutColor = voutColor;
+//use your own output instead of gl_FragColor 
+out vec4 fragColor;
+
+void main() {
+    //'texture' instead of 'texture2D'
+    fragColor = texture(tex0, vTexCoord);
 }

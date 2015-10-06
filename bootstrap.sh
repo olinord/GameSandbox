@@ -9,3 +9,4 @@ pip install pyYaml
 pip install pymunk
 pip install nose
 pip install mock
+pip install imageio

@@ -2,14 +2,18 @@
 from OpenGL.GL import *
 from pyrr import Matrix44, Vector3, vector3, vector
 from componentSystem.componentRegistry import COMPONENT_REGISTRY
-from componentSystem.componentConst import RENDERABLE_COMPONENT
+from componentSystem.componentConst import RENDERABLE_COMPONENT, TRANSLATION_COMPONENT
+
+CAMERA_FOV = 45
+CAMERA_NEAR = 10
+CAMERA_FAR = 300
 
 class RenderSystem(object):
 
 	def __init__(self):
 		self.renderBatches = {}
 		self.view = Matrix44.identity()
-		self.AdjustView((0.0, 0.0, 10), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0))
+		self.AdjustView((0.0, 0.0, -150), (0.0, 0.0, 0.0), (0.0, 1.0, 0.0))
 		self.perspectiveMatrix = Matrix44.identity()
 
 	def AdjustView(self, eyePosition, targetPosition, upVector):
@@ -28,8 +32,12 @@ class RenderSystem(object):
 		 
 		return self.view
 
-	def SetPerspective(self, fovy, aspect, near, far):
-		self.perspectiveMatrix = Matrix44.perspective_projection(fovy, aspect, near, far)
+	def SetPerspective(self, width, height):
+		self.perspectiveMatrix = Matrix44.perspective_projection(CAMERA_FOV, width/height, CAMERA_NEAR, CAMERA_FAR)
+
+		translationComponents = COMPONENT_REGISTRY.GetComponentsWithName(TRANSLATION_COMPONENT)
+		for translationComponent in translationComponents:
+			translationComponent.SetScale(1.0, (1.0 * width)/(1.0 * height))
 
 	def Setup(self):
 		for renderComponent in COMPONENT_REGISTRY.GetComponentsWithName(RENDERABLE_COMPONENT):
@@ -43,7 +51,9 @@ class RenderSystem(object):
 	def Render(self, dt):
 		for programID, renderBatch in self.renderBatches.iteritems():
 			glUseProgram(programID)
-			renderBatch[0].SetPerFrameInfo(perspective=self.perspectiveMatrix, view=self.view)
+			renderBatch[0].SetPerFrameInfo(
+				matrix44={"perspective":self.perspectiveMatrix, "view":self.view}
+			)
 			for renderComponent in renderBatch:
 				renderComponent.Render(dt)
 		glUseProgram(0)		
