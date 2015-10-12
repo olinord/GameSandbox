@@ -1,4 +1,4 @@
 
 RENDERABLE_COMPONENT = "renderable"
-TRANSLATION_COMPONENT = "translation"
 PLAYER_CONTROLLED_COMPONENT = "playerControlled"
+PHYSICS_COMPONENT = "physics"

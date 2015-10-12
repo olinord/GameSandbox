@@ -1,6 +1,3 @@
 renderable:
-  image: test.png
-translation:
-    x: 3
-    y: 3
+  imageResFile: test.png
 playerControlled: {}

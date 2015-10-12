@@ -1,8 +1,9 @@
+from componentSystem.components.component import Component
 
-class PlayerControlledComponent(object):
+class PlayerControlledComponent(Component):
 
 	def __init__(self, entityName, componentInfo):
-		pass
+		Component.__init__(self, entityName, componentInfo)
 
 	def Update(self, dt):
 		pass

@@ -1,10 +1,6 @@
 name: Bloo
 objects:
-  player:
-    type: player
-  boxy1:
+  ground1:
+    type: ground
+  box1:
     type: box
-    additionalComponents:
-      translation:
-        x: 0
-        y: 0

@@ -1,13 +1,13 @@
 renderable:
   imageResFile: test.png
   width: 10
-  height: 10
+  height: 1
 physics:
-  type: dynamic
+  type: static
   position: 
-  - -4
-  - 15
+  - 5
+  - 5
   shapes:
   - type: box
     width: 10
-    height: 10
+    height: 1

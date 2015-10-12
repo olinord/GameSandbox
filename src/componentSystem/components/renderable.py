@@ -6,25 +6,24 @@ from OpenGL.GL.shaders import *
 from utilities.resourceManager import LoadImage
 from utilities.shaderManager import GetProgram, CreateImageTexture
 from componentSystem.componentRegistry import COMPONENT_REGISTRY
-from componentSystem.componentConst import TRANSLATION_COMPONENT
+from componentSystem.componentConst import PHYSICS_COMPONENT
+from componentSystem.components.component import Component
 
 
-class RenderableComponent(object):
+class RenderableComponent(Component):
+	__requiredAttributes__ = ["imageResFile", "width", "height"]
 
 	def __init__(self, entityName, componentInfo):
-
-		image = LoadImage(componentInfo["image"])
-		self.width, self.height, _ = image.shape
+		Component.__init__(self, entityName, componentInfo)
+		image = LoadImage(self.imageResFile)
 		self.halfHeight = self.height * 0.5
 		self.halfWidth = self.width * 0.5
 		
 		self.imageID = CreateImageTexture(image)
-
-		self.entityName = entityName
 		self.vaoId = None
 		self.programID = None
 
-		self.translationComponent = None
+		self.physicsComponent = None
 		self.uniformDataLocations = {}
 
 		self.SetupRenderInfo()
@@ -117,9 +116,9 @@ class RenderableComponent(object):
 			glUniformMatrix4fv(self.uniformDataLocations[matrixName], 1, GL_FALSE, matrixValue)
 	
 	def GetWorldMatrix(self):
-		if self.translationComponent is None:
-			self.translationComponent = COMPONENT_REGISTRY.GetEntityComponent(self.entityName, TRANSLATION_COMPONENT)
-		return self.translationComponent.matrix
+		if self.physicsComponent is None:
+			self.physicsComponent = COMPONENT_REGISTRY.GetEntityComponent(self.entityName, PHYSICS_COMPONENT)
+		return self.physicsComponent.GetWorldMatrix()
 
 	def Render(self, dt):
 		self.SetPerFrameInfo(matrix44={"world": self.GetWorldMatrix()})
