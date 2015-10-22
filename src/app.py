@@ -13,6 +13,8 @@ from componentSystem.systems.renderSystem import RenderSystem
 
 class GameApp(object):
 
+	MAX_FRAME_TIME = 1000.0/60.0
+
 	def __init__(self, gameName):
 		self.backgroundColor = (0.2, 0.2, 0.2, 1.0)
 		self.gameName = gameName
@@ -53,19 +55,27 @@ class GameApp(object):
 		event = sdl2.SDL_Event()
 		running = True
 
-
 		lastFrameTime = sdl2.SDL_GetTicks()
 		currentFrameTime = lastFrameTime
 
 		while running:
 			currentFrameTime = sdl2.SDL_GetTicks()
-			dt = (currentFrameTime - lastFrameTime)*0.0001
+			dt = (currentFrameTime - lastFrameTime)
+
+			# Cap FPS
+			if dt < self.MAX_FRAME_TIME:
+				sdl2.SDL_Delay(int(self.MAX_FRAME_TIME - dt))
+				dt = self.MAX_FRAME_TIME
+			dt *= 0.001
+			lastFrameTime = currentFrameTime
 			
 			while sdl2.SDL_PollEvent(ctypes.byref(event)) != 0:
 				if self.IsExitEvent(event):
 					running = False
 				elif self.IsWindowResizeEvent(event):
 					self.Resize(event.window.data1, event.window.data2)
+				elif self.IsToggleDebugModeEvent(event):
+					print "toggling debug"
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 			glClearColor(*self.backgroundColor)
@@ -74,7 +84,6 @@ class GameApp(object):
 			self.currentState.Render(dt)
 
 			sdl2.SDL_GL_SwapWindow(self.window)
-			lastFrameTime = currentFrameTime
 			
 		self.Exit()
 
@@ -93,7 +102,13 @@ class GameApp(object):
 	def IsWindowResizeEvent(self, event):
 		return event.type == sdl2.SDL_WINDOWEVENT and event.window.event == sdl2.SDL_WINDOWEVENT_RESIZED
 
+	def IsToggleDebugModeEvent(self, event):
+		if event.type == sdl2.SDL_KEYDOWN:
+			if event.key.keysym.mod & sdl2.KMOD_LCTRL or event.key.keysym.mod & sdl2.KMOD_RCTRL:
+				return event.key.keysym.sym == sdl2.SDLK_d
+
 	def Resize(self, width, height):
+		glViewport(0, 0, width, height)
 		self.currentState.Resize(width, height)
 
 	def Exit(self):

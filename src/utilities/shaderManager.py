@@ -7,6 +7,9 @@ SHADER_FOLDER = AbsJoin(ABSOLUTE_RES_FOLDER, "shaders")
 
 cachedShaderPrograms = {}
 
+def GetProgramWithGeneratedShaderNames(shaderPath):
+	return GetProgram(shaderPath + ".vs", shaderPath + ".ps")
+
 def GetProgram(vertexShaderPath, pixelShaderPath):
 	cacheKey = (vertexShaderPath, pixelShaderPath)
 
@@ -32,12 +35,12 @@ def LoadShader(shaderPath):
 	with open(AbsJoin(SHADER_FOLDER, shaderPath)) as f:
 		return compileShader(f.read(), shaderType)
 
-def CreateImageTexture(image):
+def CreateImageTexture(image, textureIndex=None):
 	xSize, ySize, _ = image.shape
 	
 	textureID = glGenTextures(1)
 
-	glActiveTexture(GL_TEXTURE0)
+	glActiveTexture(GL_TEXTURE0 if textureIndex is None else textureIndex)
 	glBindTexture(GL_TEXTURE_2D, textureID)
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
@@ -47,4 +50,4 @@ def CreateImageTexture(image):
 			GL_TEXTURE_2D, 0, GL_RGBA, xSize, ySize, 0,
 			GL_RGBA, GL_UNSIGNED_BYTE, image.tobytes()
 		)
-	return textureID
+	return textureID, textureIndex

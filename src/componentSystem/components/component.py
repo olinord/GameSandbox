@@ -1,5 +1,5 @@
 from componentSystem.componentFactory import CrateSubComponent
-
+from collections import namedtuple
 
 class InvalidAttributeException(Exception):
 	def __init__(self, entityName, invalidAttributeName, invalidAttributeValue):
@@ -49,5 +49,10 @@ class Component(object):
 		for attributeName, defaultAttributeValue in self.__attributesWithDefaultValues__.iteritems():
 			if not hasattr(self, attributeName):
 				setattr(self, attributeName, defaultAttributeValue)
+
+	def SetAttribute(self, attributeName, attributeValue):
+		if isinstance(attributeValue, dict):
+			namedDict = 
+			setattr§
 
 				

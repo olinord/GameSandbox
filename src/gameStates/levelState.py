@@ -16,7 +16,9 @@ class LevelState(object):
 		self.renderSystem.Setup()
 		self.physicsSystem.Setup()
 
+
 	def Resize(self, width, height):
+		print "resizing", width, height
 		self.renderSystem.SetPerspective(width, height)
 
 	def Update(self, dt):

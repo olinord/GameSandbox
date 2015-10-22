@@ -1,6 +1,4 @@
 name: Bloo
-objects:
-  ground1:
-    type: ground
+objects: 
   box1:
-    type: box
+	type: box

@@ -10,16 +10,16 @@ from componentSystem.componentConst import PHYSICS_COMPONENT
 from componentSystem.components.component import Component
 
 
-class RenderableComponent(Component):
-	__requiredAttributes__ = ["imageResFile", "width", "height"]
-
+class ModelComponent(Component):
+	__requiredAttributes__ = ["name", "texture", "width", "height", "offset"]
+	
 	def __init__(self, entityName, componentInfo):
 		Component.__init__(self, entityName, componentInfo)
 		image = LoadImage(self.imageResFile)
 		self.halfHeight = self.height * 0.5
 		self.halfWidth = self.width * 0.5
 		
-		self.imageID = CreateImageTexture(image)
+		self.imageID, _ = CreateImageTexture(image)
 		self.vaoId = None
 		self.programID = None
 

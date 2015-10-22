@@ -7,7 +7,7 @@ from componentSystem.componentConst import PHYSICS_COMPONENT
 class PhysicsSystem(object):
 
 	def __init__(self):
-		self.world = b2.World((0, -30), True)
+		self.world = b2.World((0, -9.8), True)
 
 	def Setup(self):
 		for physicsComponent in COMPONENT_REGISTRY.GetComponentsWithName(PHYSICS_COMPONENT):
@@ -29,7 +29,7 @@ class PhysicsSystem(object):
 			shapeType = shapeInfo["type"]
 			if shapeType == "box":
 				halfwidth, halfheight = shapeInfo["width"] * 0.5, shapeInfo["height"] * 0.5
-				body.create_polygon_fixture(box=(halfwidth, halfheight), friction=1, density=20)
+				body.create_polygon_fixture(box=(halfwidth, halfheight), friction=0.4, density=100)
 
 		return body
 

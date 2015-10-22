@@ -1,3 +1,11 @@
 renderable:
   imageResFile: test.png
-playerControlled: {}
+character:
+  maxSpeed: 10
+  
+
+#The player should be kinematic and have a circle as the collision shape for the feet
+#Another collision shape should be for the torso and a final one for the head
+
+#That way the running/jumping/walking animation can be tied to the rotation of the 
+#circle and the impacts of the feet/torso/head be calculated with different health subtractions
