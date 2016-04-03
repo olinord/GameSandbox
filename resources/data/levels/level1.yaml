@@ -1,4 +1,4 @@
 name: Bloo
-objects: 
-  box1:
-	type: box
+objects:
+  skeleton:
+    type: skeletonTest

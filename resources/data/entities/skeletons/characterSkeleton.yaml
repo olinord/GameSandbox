@@ -1,0 +1,27 @@
+jointTree:
+  hip:
+    jointType: static
+    connections:
+      kneeR:
+        lengthFromParent: 10
+        jointType: dynamic
+        connections:
+          footR:
+            lengthFromParent: 10
+            jointType: dynamic
+      kneeL:
+        lengthFromParent: 10
+        jointType: dynamic
+        connections:
+          footL:
+            lengthFromParent: 10
+            jointType: dynamic
+animations:
+  idle:
+    key1:
+      hip.kneeR:
+        rotation: 0.0
+        offset: [0, 0]
+      hip.kneeL:
+        rotation: 0.0
+        offset: [0, 0]

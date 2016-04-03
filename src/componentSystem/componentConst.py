@@ -2,3 +2,5 @@
 RENDERABLE_COMPONENT = "renderable"
 PLAYER_CONTROLLED_COMPONENT = "playerControlled"
 PHYSICS_COMPONENT = "physics"
+TRANSFORM_COMPONENT = "transform"
+SKELETON_COMPONENT = "skeleton"

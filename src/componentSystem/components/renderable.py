@@ -6,19 +6,19 @@ from OpenGL.GL.shaders import *
 from utilities.resourceManager import LoadImage
 from utilities.shaderManager import GetProgram, CreateImageTexture
 from componentSystem.componentRegistry import COMPONENT_REGISTRY
-from componentSystem.componentConst import PHYSICS_COMPONENT
+from componentSystem.componentConst import PHYSICS_COMPONENT, TRANSFORM_COMPONENT
 from componentSystem.components.component import Component
 
 
-class ModelComponent(Component):
-	__requiredAttributes__ = ["name", "texture", "width", "height", "offset"]
-	
+class RenderableComponent(Component):
+	__requiredAttributes__ = ["name", "texture", "width", "height"]
+
 	def __init__(self, entityName, componentInfo):
 		Component.__init__(self, entityName, componentInfo)
-		image = LoadImage(self.imageResFile)
+		image = LoadImage(self.texture)
 		self.halfHeight = self.height * 0.5
 		self.halfWidth = self.width * 0.5
-		
+
 		self.imageID, _ = CreateImageTexture(image)
 		self.vaoId = None
 		self.programID = None
@@ -52,17 +52,17 @@ class ModelComponent(Component):
 		points = [
 			-self.halfWidth, -self.halfHeight,
 			-self.halfWidth, self.halfHeight,
-			self.halfWidth, self.halfHeight, 
-			self.halfWidth, self.halfHeight, 
+			self.halfWidth, self.halfHeight,
+			self.halfWidth, self.halfHeight,
 			self.halfWidth, -self.halfHeight,
 			-self.halfWidth, -self.halfHeight
 		]
 
 		uv = [
 			0.0, 1.0,
-			0.0, 0.0, 
+			0.0, 0.0,
 			1.0, 0.0,
-			1.0, 0.0, 
+			1.0, 0.0,
 			1.0, 1.0,
 			0.0, 1.0,
 		]
@@ -114,18 +114,24 @@ class ModelComponent(Component):
 	def SetPerFrameInfo(self, matrix44={}):
 		for matrixName, matrixValue in matrix44.iteritems():
 			glUniformMatrix4fv(self.uniformDataLocations[matrixName], 1, GL_FALSE, matrixValue)
-	
+
 	def GetWorldMatrix(self):
-		if self.physicsComponent is None:
-			self.physicsComponent = COMPONENT_REGISTRY.GetEntityComponent(self.entityName, PHYSICS_COMPONENT)
-		return self.physicsComponent.GetWorldMatrix()
+		positionalComponents = [TRANSFORM_COMPONENT, PHYSICS_COMPONENT]
+		
+		for componentName in positionalComponents:
+			c = COMPONENT_REGISTRY.GetEntityComponent(self.entityName, componentName)
+			
+			if c is not None:
+				return c.GetWorldMatrix()
+		
+		return None
 
 	def Render(self, dt):
 		self.SetPerFrameInfo(matrix44={"world": self.GetWorldMatrix()})
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, self.imageID);
-		
+
 		glBindVertexArray(self.vaoId)
 		glDrawArrays(GL_TRIANGLES, 0, 6)
 

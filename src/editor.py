@@ -9,26 +9,28 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 from utilities.windowUtil import *
-from gameStates.levelState import LevelState
+from gameStates.editorState import EditorState
 from componentSystem.systems.renderSystem import RenderSystem
 
-class GameApp(object):
+class EditorApp(object):
 
 	MAX_FRAME_TIME = 1000.0/60.0
 
-	def __init__(self, gameName):
+	def __init__(self):
 		self.backgroundColor = (0.2, 0.2, 0.2, 1.0)
-		self.gameName = gameName
 		self.window = None
 		self.context = None
 		self.currentState = None
 
 	def SetupApp(self, width, height):
-		self.window, self.context = CreateWindow(width, height, self.gameName)
+		self.window, self.context = CreateWindow(width, height, "Editor")
 		if not self.window:
 			return False
-
-		self.currentState = LevelState("level1")
+		
+		self.currentState = EditorState()
+		# Maybe have one state for each component?
+		# translation, animatedRenderable, staticRenderable and finally one for the entity as a whole in a test level?
+		self.currentState.AddEntity("test", "skeletonTest")
 		self.Resize(width, height)
 
 		return True
@@ -57,8 +59,6 @@ class GameApp(object):
 					running = False
 				elif self.IsWindowResizeEvent(event):
 					self.Resize(event.window.data1, event.window.data2)
-				elif self.IsToggleDebugModeEvent(event):
-					print "toggling debug"
 					
 			ClearBuffers(self.backgroundColor)
 			self.currentState.Update(dt)

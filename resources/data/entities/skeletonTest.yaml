@@ -1,0 +1,7 @@
+skeleton:
+  skeletonPath: data/entities/skeletons/characterSkeleton.yaml
+renderable:
+  name: bla
+  texture: boo.png
+  width: 10
+  height: 10

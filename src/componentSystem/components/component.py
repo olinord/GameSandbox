@@ -44,15 +44,8 @@ class Component(object):
 
 		for attributeName in self.__requiredAttributes__:
 			if not hasattr(self, attributeName):
-				raise RequiredAttributeMissingException(entityName, attributeName)				
+				raise RequiredAttributeMissingException(entityName, attributeName)
 
 		for attributeName, defaultAttributeValue in self.__attributesWithDefaultValues__.iteritems():
 			if not hasattr(self, attributeName):
 				setattr(self, attributeName, defaultAttributeValue)
-
-	def SetAttribute(self, attributeName, attributeValue):
-		if isinstance(attributeValue, dict):
-			namedDict = 
-			setattr§
-
-				

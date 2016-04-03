@@ -1,10 +1,11 @@
 renderable:
-  imageResFile: test.png
+  name: ground
+  texture: test.png
   width: 10
   height: 1
 physics:
   type: static
-  position: 
+  position:
   - 5
   - 5
   shapes:

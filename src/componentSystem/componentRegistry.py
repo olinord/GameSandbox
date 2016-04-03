@@ -27,8 +27,14 @@ class ComponentRegistry(object):
 	def GetEntityByName(self, entityName):
 		return self.entities[entityName]
 
-	def GetEntityComponent(self, entityName, componentName):
-		return self.entities[entityName][componentName]
+	def HasEntityComponent(self, entityName, componentName):
+		return componentName in self.entities[entityName]
+
+	def GetEntityComponent(self, entityName, componentName, default=None):
+		try:
+			return self.entities[entityName][componentName]
+		except KeyError:
+			return default
 
 	def RegisterEntity(self, entityName, components):
 		for componentName, componentInfo in components.iteritems():

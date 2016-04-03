@@ -31,14 +31,15 @@ class RenderSystem(object):
 		self.view.r2 = [xaxis[1], yaxis[1], zaxis[1], 0]
 		self.view.r3 = [xaxis[2], yaxis[2], zaxis[2], 0]
 		self.view.r4 =[-vector3.dot( xaxis, eye ), -vector3.dot( yaxis, eye ), -vector3.dot( zaxis, eye ),  1 ]
-		
+
 		return self.view
 
 	def SetPerspective(self, width, height):
 		screenRatio = (1.0 * width) / (1.0 * height)
 		self.perspectiveMatrix = Matrix44.perspective_projection(CAMERA_FOV, screenRatio, CAMERA_NEAR, CAMERA_FAR)
 
-	def Setup(self):
+	def CreateBatches(self):
+		self.renderBatches = {}
 		for renderComponent in COMPONENT_REGISTRY.GetComponentsWithName(RENDERABLE_COMPONENT):
 			batch = self.renderBatches.get(renderComponent.programID, [])
 			batch.append(renderComponent)
@@ -48,6 +49,7 @@ class RenderSystem(object):
 		pass
 
 	def Render(self, dt):
+		self.CreateBatches()
 		# Draw opaque objects
 		for programID, renderBatch in self.renderBatches.iteritems():
 			glUseProgram(programID)
@@ -58,10 +60,11 @@ class RenderSystem(object):
 				renderComponent.Render(dt)
 
 		# Draw transparent objects
-		glEnable(GL_BLEND);
+		"""glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glUseProgram(self.debugRenderObject.shaderProgramID)
 		self.debugRenderObject.SetUniformMatrix4fv("perspective", self.perspectiveMatrix)
 		self.debugRenderObject.SetUniformMatrix4fv("view", self.view)
 		self.debugRenderObject.Render(dt)
-		glUseProgram(0)		
+		"""
+		glUseProgram(0)

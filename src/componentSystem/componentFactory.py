@@ -1,5 +1,15 @@
 from componentSystem.componentConst import *
 
+def CreateTransformComponent(entityName, componentInfo):
+	# import the components as late as possible, so we don't import gunk in the unit tests
+	from componentSystem.components.transform import TransformComponent
+	return TransformComponent(entityName, componentInfo)
+
+def CreateSkeletonComponent(entityName, componentInfo):
+	# import the components as late as possible, so we don't import gunk in the unit tests
+	from componentSystem.components.skeleton import SkeletonComponent
+	return SkeletonComponent(entityName, componentInfo)
+
 def CreateRenderableComponent(entityName, componentInfo):
 	# import the components as late as possible, so we don't import gunk in the unit tests
 	from componentSystem.components.renderable import RenderableComponent
@@ -27,14 +37,16 @@ class SubComponentNotFoundException(Exception):
 componentFactoryMethods = {
 	RENDERABLE_COMPONENT: CreateRenderableComponent,
 	PLAYER_CONTROLLED_COMPONENT: CreatePlayerControlledComponent,
-	PHYSICS_COMPONENT: CreatePhysicsComponent
+	PHYSICS_COMPONENT: CreatePhysicsComponent,
+	SKELETON_COMPONENT: CreateSkeletonComponent,
+	TRANSFORM_COMPONENT: CreateTransformComponent
 }
 
 def CreateComponent(entityName, componentName, componentInfo):
-	try:
-		return componentFactoryMethods[componentName](entityName, componentInfo)
-	except KeyError:
+	if componentName not in componentFactoryMethods:
 		raise ComponentNotFoundException("Could not find component method for %s"%componentName)
+
+	return componentFactoryMethods[componentName](entityName, componentInfo)
 
 subComponentFactoryMethods = {
 }

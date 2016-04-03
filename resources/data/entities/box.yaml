@@ -1,24 +1,11 @@
-model:
-  shapes:
-    - TexturedRectangle:
-        name: "Top"
-        texture: box.png
-        width: 10
-        height: 10
-        offset: 
-          x: 10
-          y: 5
-    - TexturedRectangle:
-        name: "Bottom"
-        texture: boo.png
-        width: 10
-        height: 5
-        offset: 
-          x: 0
-          y: 0
+renderable:
+  name: bla
+  texture: boo.png
+  width: 10
+  height: 10
 physics:
   type: dynamic
-  position: 
+  position:
   - -4
   - 15
   shapes:

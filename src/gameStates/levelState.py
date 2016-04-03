@@ -1,7 +1,7 @@
 from utilities.resourceManager import LoadResFile
 from componentSystem.componentRegistry import COMPONENT_REGISTRY
 from componentSystem.componentConst import PLAYER_CONTROLLED_COMPONENT
-from utilities.levelLoader import RegisterLevelEntities
+from utilities.entityLoader import RegisterLevelEntities
 from componentSystem.systems.renderSystem import RenderSystem
 from componentSystem.systems.physicsSystem import PhysicsSystem
 
@@ -11,14 +11,10 @@ class LevelState(object):
 		self.levelData = LoadResFile("data/levels/" + levelName + ".yaml")
 		self.renderSystem = RenderSystem()
 		self.physicsSystem = PhysicsSystem()
-
 		RegisterLevelEntities(self.levelData)
-		self.renderSystem.Setup()
 		self.physicsSystem.Setup()
 
-
 	def Resize(self, width, height):
-		print "resizing", width, height
 		self.renderSystem.SetPerspective(width, height)
 
 	def Update(self, dt):
